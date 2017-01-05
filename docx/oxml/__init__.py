@@ -25,8 +25,20 @@ def parse_xml(xml):
     parser is used, so custom element classes are produced for elements in
     *xml* that have them.
     """
-    root_element = etree.fromstring(xml, oxml_parser)
+    root_element = etree.fromstring(remove_hyperlink_tags(xml), oxml_parser)
     return root_element
+
+
+def remove_hyperlink_tags(xml):
+    """
+    Custom function: To remove hyperlink tags from the xml text. (To allow
+    hyperlinked text to be available in the para.text and run.text)
+    """
+    import re
+    text = xml.decode('utf-8')
+    text = text.replace("</w:hyperlink>","")
+    text = re.sub('<w:hyperlink[^>]*>', "", text)
+    return text.encode('utf-8')
 
 
 def register_element_cls(tag, cls):
